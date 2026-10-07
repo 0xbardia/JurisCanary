@@ -1,0 +1,195 @@
+{
+  "ctor": {
+    "params": [],
+    "kwparams": {}
+  },
+  "methods": {
+    "case_exists": {
+      "params": [
+        [
+          "case_id",
+          "int"
+        ]
+      ],
+      "kwparams": {},
+      "readonly": true,
+      "ret": "bool"
+    },
+    "get_baseline": {
+      "params": [
+        [
+          "case_id",
+          "int"
+        ]
+      ],
+      "kwparams": {},
+      "readonly": true,
+      "ret": {
+        "overall_outcome": "string",
+        "criteria_results": [
+          {
+            "$rep": "string"
+          }
+        ]
+      }
+    },
+    "get_case_count": {
+      "params": [],
+      "kwparams": {},
+      "readonly": true,
+      "ret": "int"
+    },
+    "get_case_definition": {
+      "params": [
+        [
+          "case_id",
+          "int"
+        ]
+      ],
+      "kwparams": {},
+      "readonly": true,
+      "ret": {
+        "case_id": "int",
+        "creator": "string",
+        "question": "string",
+        "evidence_snapshot": "string",
+        "criteria": [
+          {
+            "$rep": "string"
+          }
+        ],
+        "allowed_outcomes": [
+          {
+            "$rep": "string"
+          }
+        ]
+      }
+    },
+    "get_drift_count": {
+      "params": [
+        [
+          "case_id",
+          "int"
+        ]
+      ],
+      "kwparams": {},
+      "readonly": true,
+      "ret": "int"
+    },
+    "get_drift_status": {
+      "params": [
+        [
+          "case_id",
+          "int"
+        ]
+      ],
+      "kwparams": {},
+      "readonly": true,
+      "ret": "string"
+    },
+    "get_latest_result": {
+      "params": [
+        [
+          "case_id",
+          "int"
+        ]
+      ],
+      "kwparams": {},
+      "readonly": true,
+      "ret": {
+        "overall_outcome": "string",
+        "criteria_results": [
+          {
+            "$rep": "string"
+          }
+        ]
+      }
+    },
+    "get_recheck": {
+      "params": [
+        [
+          "case_id",
+          "int"
+        ],
+        [
+          "index",
+          "int"
+        ]
+      ],
+      "kwparams": {},
+      "readonly": true,
+      "ret": {
+        "evaluation": {
+          "overall_outcome": "string",
+          "criteria_results": [
+            {
+              "$rep": "string"
+            }
+          ]
+        },
+        "drift_status": "string"
+      }
+    },
+    "get_recheck_count": {
+      "params": [
+        [
+          "case_id",
+          "int"
+        ]
+      ],
+      "kwparams": {},
+      "readonly": true,
+      "ret": "int"
+    },
+    "get_version": {
+      "params": [],
+      "kwparams": {},
+      "readonly": true,
+      "ret": "string"
+    },
+    "recheck_case": {
+      "params": [
+        [
+          "case_id",
+          "int"
+        ]
+      ],
+      "kwparams": {},
+      "readonly": false,
+      "ret": "string",
+      "payable": false
+    },
+    "register_case": {
+      "params": [
+        [
+          "question",
+          "string"
+        ],
+        [
+          "evidence_snapshot",
+          "string"
+        ],
+        [
+          "criteria",
+          [
+            {
+              "$rep": "string"
+            }
+          ]
+        ],
+        [
+          "allowed_outcomes",
+          [
+            {
+              "$rep": "string"
+            }
+          ]
+        ]
+      ],
+      "kwparams": {},
+      "readonly": false,
+      "ret": "int",
+      "payable": false
+    }
+  }
+}

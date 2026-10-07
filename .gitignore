@@ -1,0 +1,6 @@
+.venv/
+.env
+.pytest_cache/
+.gltest-artifacts/
+__pycache__/
+*.py[cod]
