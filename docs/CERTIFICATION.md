@@ -1,6 +1,6 @@
 # JurisCanary v1.0.0 certification record
 
-**Status: BLOCKED.** Static checks, Direct Mode, local full-consensus controls, local JurisCanary integration, and local simulated-validator adversarial scenarios pass. Stable Studionet JurisCanary deployment, live writes, deployed reads, and source-to-deployment verification remain incomplete because the public RPC rejected the official reference deployment with `-32029 Rate limit exceeded: 500 requests per hour`. Earlier attempts also reported `5000 requests per day`. A minimal control did deploy on Studionet. No JurisCanary Studionet deployment or read/write is claimed.
+**Status: BLOCKED_EXTERNAL.** Static checks, Direct Mode, local full-consensus controls, local JurisCanary integration, and local simulated-validator adversarial scenarios pass. The single final frozen-source Studionet deployment submission was rejected before transaction creation at `2026-10-08T01:35:11.845434Z` with `-32029 Rate limit exceeded: 500 requests per hour`. Earlier attempts also reported `5000 requests per day`. A minimal control did deploy on Studionet. No JurisCanary Studionet transaction, write, or read is claimed.
 
 This record preserves the `runner_actions` incident, including the limit of the available old-runner evidence. It distinguishes tests actually executed from gates blocked by the remote rate limit.
 
@@ -152,12 +152,12 @@ Configured network: `https://studio.genlayer.com/api`, chain `61999`.
 
 - Minimal control full-consensus deployment: PASS, `MAJORITY_AGREE`, 1 round, 5/5 votes, tx `0x0118d058c84d89f42f8ba8e0f3b37d44cd8ae3a68aa20895c62abee64c86dc83`.
 - Official boilerplate deployment was attempted twice (about 22:44 UTC and 23:26 UTC on 2026-10-07) and retried after UTC midnight on 2026-10-08. Earlier attempts were rejected before transaction creation by `eth_sendRawTransaction`, JSON-RPC `-32029`, `Rate limit exceeded: 5000 requests per day`; the post-midnight retry returned `Rate limit exceeded: 500 requests per hour`. No transaction ID or receipt exists for any official-contract attempt.
-- JurisCanary Studionet deployment: not attempted because the required current official contract control could not be submitted. No JurisCanary Studionet address, receipt, source retrieval, or live write exists.
+- One JurisCanary final deployment submission was made at `2026-10-08T01:35:11.845434Z`, after confirming alias `studionet`, RPC `https://studio.genlayer.com/api`, chain ID `61999`, CLI `0.39.2`, and exact frozen source SHA. `eth_sendRawTransaction` returned JSON-RPC `-32029`, `Rate limit exceeded: 500 requests per hour`, before returning a transaction hash. No retry was made. No JurisCanary Studionet address, receipt, source retrieval, or live write exists.
 - A Studio UI wallet showed zero GEN; `sim_fundAccount` was also rate-limited. This is not identified as the blocker because the minimal contract deployed despite the zero balance; the observed blocker is the public RPC request quota.
 - Manual contract UI review and deployed-schema inspection: BLOCKED. The hosted Studio did not contain a JurisCanary Studionet deployment, and the public control/Juris writes could not be submitted. No Studio UI result is claimed for JurisCanary.
 - Source identity: the current CLI `genlayer code` retrieved source from local JurisCanary address `0x85b547F5035d916f2BBE520C32E96cacB8F8B19D`. After removing the two trailing newline characters added by CLI output formatting, the retrieved code matched `contracts/juris_canary.py` byte-for-byte and SHA-256 `29f92d06bee467b8e0d48fe3a00df055d63e90e0ad4f62893747063e946fb3df`. `genlayer schema` for the same address displayed exactly the expected 12 methods and types. No remote Studionet source retrieval or byte-for-byte deployed-code comparison was possible.
 
-The public RPC quota is the observed external gate. The post-midnight retry proves that a UTC date change did not clear the effective hourly limit. Do not infer that the request quota has reset. Stable-network certification remains incomplete until the official control and frozen JurisCanary deployment, writes, every schema-listed view, and source identity evidence actually pass.
+The public RPC quota is the observed external gate. The quota persisted after UTC midnight and after more than an hour between attempts. The one final JurisCanary submission in this run followed the required stop-on-first-quota-error rule. No further Studionet requests were made. Stable-network certification remains incomplete until deployment, writes, every schema-listed view, and source identity evidence actually pass.
 
 ### Studionet read methods
 
@@ -204,7 +204,7 @@ No Studionet `register_case` or `recheck_case` was executed. Locally, a stable c
 | Local disagreement and malicious-Leader rotation | PASS under simulated validators |
 | Stable Studionet minimal control | PASS |
 | Official Studionet control | BLOCKED by RPC hourly request quota |
-| Frozen JurisCanary Studionet deployment | BLOCKED / not attempted |
+| Frozen JurisCanary Studionet deployment | BLOCKED_EXTERNAL before tx creation at `2026-10-08T01:35:11.845434Z` |
 | Studionet writes | BLOCKED / not run |
 | Studionet deployed reads | BLOCKED, 0/10 |
 | Studionet Studio UI review / schema inspection | BLOCKED / no JurisCanary deployment |
