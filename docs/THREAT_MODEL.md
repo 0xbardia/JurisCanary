@@ -11,7 +11,7 @@
 
 ### Malicious or faulty Leader
 
-The Leader may return a legal-looking but incorrect outcome or criterion vector. Validators independently run the semantic task from the same frozen definition and require exact agreement on both fields. Shape checks alone never establish agreement. The direct suite exercises valid-looking wrong outcomes and vectors; full-network rejection and rotation still require the Studio consensus gate.
+The Leader may return a legal-looking but incorrect outcome or criterion vector. Validators independently run the semantic task from the same frozen definition and require exact agreement on both fields. Shape checks alone never establish agreement. Direct Mode rejects valid-looking malicious results. Local Studio full-consensus tests also exercised validator disagreement with zero state mutation and an observed bad-Leader rotation followed by an accepted honest result. These used Studio's official simulated-validator configuration on localnet; they do not claim a malicious Studionet validator was controlled.
 
 ### Prompt injection in case data
 

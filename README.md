@@ -83,10 +83,12 @@ genvm-lint validate contracts/juris_canary.py
 genvm-lint typecheck contracts/juris_canary.py --strict
 genvm-lint schema contracts/juris_canary.py --output artifacts/juris_canary.schema.json
 pytest tests/direct -v
-gltest tests/integration/test_juris_canary.py --network localnet
+PYTHONPATH=/path/to/genlayer-testing-suite GENVM_VERSION=v0.2.16 \
+  PATH=/path/to/venv/bin:$PATH \
+  pytest --network localnet -m integration tests/integration -v
 ```
 
-Direct Mode enables `direct_vm.check_pickling` for every test. Studio Mode uses the configured local Studio with `leader_only: false`; it is an integration gate, not a substitute for Direct Mode.
+Direct Mode enables `direct_vm.check_pickling` for every test. Studio Mode uses the configured local Studio with `leader_only: false`; it is an integration gate, not a substitute for Direct Mode. The integration harness uses the current `genlayer-py` client API because the older `genlayer-test` contract wrapper does not match the SDK's `fees` and call signatures.
 
 ## Deployment
 
@@ -110,4 +112,4 @@ JurisCanary detects consensus interpretation changes; it does not establish lega
 
 ## Current certification state
 
-Certification is `BLOCKED`: Direct Mode and static gates pass, but local Studio transactions finalize with `runner_actions` execution errors, including an official boilerplate contract. No successful local integration deployment or Studionet deployment/live read has been completed. See [CERTIFICATION.md](docs/CERTIFICATION.md) for transaction and gate evidence.
+Certification remains `BLOCKED` pending Studionet deployment and live read/write certification. The historical local `runner_actions` failure reproduced on minimal and official contracts under the obsolete local stack; after upgrading local Studio/GenVM, all three deployment controls and the full local consensus integration suite passed. Studionet's public RPC rejected the official control with its hourly request-rate limit, including after UTC midnight. See [CERTIFICATION.md](docs/CERTIFICATION.md) for transaction IDs, the environment comparison, and the remaining gate.
