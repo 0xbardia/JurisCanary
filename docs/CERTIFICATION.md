@@ -34,14 +34,12 @@ Captured on 2026-10-07. No secret values are included.
 | GenLayer CLI | 0.39.2 | same |
 | Docker / Compose | 29.1.3 / 2.40.3 | same |
 | Local Studio source | legacy localnet stack, `LOCALNETVERSION=v0.65.0` | tag `v0.121.24`, commit `2004fc4315f0d2a0266f2da730992ce1e33ecfcc` |
-| JSON-RPC / consensus worker | legacy image; old GenVM `v0.1.3` | `yeagerai/simulator-jsonrpc:v0.121.24`, image ID `sha256:41414d73ba6e32d5e53bbbf3632427ced117f93a6d2d334bdce44dbe13abcb31`; GenVM `v0.2.16` |
-| Local chain / RPC | chain `61127` | chain `61127`, `http://127.0.0.1:4000/api` |
+| JSON-RPC / consensus worker | legacy image; old GenVM `v0.1.3` | Studio `v0.121.24`; GenVM `v0.2.16` |
+| Local chain / RPC | chain `61127` | chain `61127`, local Studio RPC |
 | Local validators | old local validator setup | 3 local Ollama `llama3` validators |
 | Stable Studionet | — | chain `61999`, `https://studio.genlayer.com/api` |
 
 The current official boilerplate repository was checked at commit `e685f1f12c4c357787d48390692a654baf576f03`. Its unmodified `contracts/PatternTest.py` SHA-256 is `e92ccbb6fe7ad4882d3fae862b10ba6031a0bb5d498c5d6b3f2539e32df678f7`. The installed test suite is current repository HEAD for this run. Local `gltest.config.yaml` sets localnet to the URL above and `leader_only: false`; Studio used its separate consensus worker. The local SDK's configured Chain object reported a different default chain ID from RPC, but RPC `eth_chainId` and finalized receipts confirmed `61127`; the test harness used the RPC client directly.
-
-Current local container snapshot on 2026-10-07 (creation times UTC; image IDs are Docker content IDs): JSON-RPC `22:25:01`, consensus worker `22:21:32` (both `sha256:41414d73...abcb31`); PostgreSQL `22:24:25` (`sha256:b0f9560a...552b24`); Redis `22:00:51` (`sha256:38117873...0e5a0`); Hardhat `21:24:06` (`sha256:6347a713...de04c7`); GenVM webdriver `21:24:06` (`sha256:21cefa02...87d46`); Ollama `21:24:06` (`sha256:f478761c...185ce`). The legacy image IDs were not retained in the available snapshot.
 
 Repository snapshots used: [testing-suite runner documentation at commit `343e3a3`](https://github.com/genlayerlabs/genlayer-testing-suite/blob/343e3a358f9e235a93b49c60721ce7676585ff07/docs/studio-runner.md), [unmodified boilerplate at commit `e685f1f`](https://github.com/genlayerlabs/genlayer-project-boilerplate/tree/e685f1f12c4c357787d48390692a654baf576f03), [Studio release `v0.121.24`](https://github.com/genlayerlabs/genlayer-studio/tree/v0.121.24), and [CLI source commit `3396474`](https://github.com/genlayerlabs/genlayer-cli/tree/3396474b775d998ab3778ac7cfd1e2e197f8b47f). Current GenLayer docs for [the Equivalence Principle](https://docs.genlayer.com/developers/intelligent-contracts/equivalence-principle), [non-determinism](https://docs.genlayer.com/developers/intelligent-contracts/features/non-determinism), [storage](https://docs.genlayer.com/developers/intelligent-contracts/storage), [dataclasses](https://docs.genlayer.com/developers/intelligent-contracts/types/dataclasses), [collections](https://docs.genlayer.com/developers/intelligent-contracts/types/collections), [testing](https://docs.genlayer.com/developers/intelligent-contracts/testing), [Studio](https://docs.genlayer.com/developers/intelligent-contracts/tools/genlayer-studio), [CLI deployment](https://docs.genlayer.com/developers/intelligent-contracts/deploying/cli-deployment), [genvm-linter](https://docs.genlayer.com/api-references/genlayer-linter), and [GenLayer Testing Suite](https://docs.genlayer.com/api-references/genlayer-test) informed the compatibility and behavior review.
 
@@ -91,22 +89,24 @@ The schema was manually inspected: zero-argument constructor, expected integer/s
 
 ## Direct Mode
 
-Command:
+Command (run from the repository root with the pinned dependencies installed):
 
 ```bash
-PYTHONPATH=/tmp/genlayer-testing-suite GENVM_VERSION=v0.2.16 \
-  PATH=/tmp/jurisc-venv/bin:$PATH pytest tests/direct -v --tb=short
+export GENVM_VERSION=v0.2.16
+pytest tests/direct -v --tb=short
 ```
 
 Result: **43 passed, 0 failed, 0 skipped**. Direct Mode enables `direct_vm.check_pickling`. Coverage includes all input limits and boundary classes, Unicode/multiline and embedded markup, valid-looking malicious Leader outputs, malformed Leader results, independent Validator errors, disagreement, no-mutation failure paths, deterministic stable/criteria/outcome drift classification, immutable baseline/definition, history, public views, and case isolation. Mutation-thinking checks fail if validation is made permissive or outcome drift is classified as stable.
 
 ## Local full-consensus integration
 
-Command:
+Command (with local Studio running and the testing-suite checkout exposed to Python):
 
 ```bash
-PYTHONPATH=/tmp/genlayer-testing-suite GENVM_VERSION=v0.2.16 \
-  PATH=/tmp/jurisc-venv/bin:$PATH \
+TEST_SUITE_DIR="$(mktemp -d)"
+git clone --quiet https://github.com/genlayerlabs/genlayer-testing-suite.git "$TEST_SUITE_DIR"
+git -C "$TEST_SUITE_DIR" checkout 343e3a358f9e235a93b49c60721ce7676585ff07
+PYTHONPATH="$TEST_SUITE_DIR" GENVM_VERSION=v0.2.16 \
   pytest -s --network localnet -m integration tests/integration -v --tb=short
 ```
 
